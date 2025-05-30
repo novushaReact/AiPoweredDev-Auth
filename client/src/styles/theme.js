@@ -9,58 +9,58 @@ export const theme = {
   // =============================================================================
   colors: {
     primary: {
-      50: '#eff6ff',
-      100: '#dbeafe',
-      200: '#bfdbfe',
-      300: '#93c5fd',
-      400: '#60a5fa',
-      500: '#3b82f6',
-      600: '#2563eb',
-      700: '#1d4ed8',
-      800: '#1e40af',
-      900: '#1e3a8a',
-      950: '#172554',
+      50: "#eff6ff",
+      100: "#dbeafe",
+      200: "#bfdbfe",
+      300: "#93c5fd",
+      400: "#60a5fa",
+      500: "#3b82f6",
+      600: "#2563eb",
+      700: "#1d4ed8",
+      800: "#1e40af",
+      900: "#1e3a8a",
+      950: "#172554",
     },
-    
+
     secondary: {
-      50: '#f0f9ff',
-      100: '#e0f2fe',
-      200: '#bae6fd',
-      300: '#7dd3fc',
-      400: '#38bdf8',
-      500: '#0ea5e9',
-      600: '#0284c7',
-      700: '#0369a1',
-      800: '#075985',
-      900: '#0c4a6e',
+      50: "#f0f9ff",
+      100: "#e0f2fe",
+      200: "#bae6fd",
+      300: "#7dd3fc",
+      400: "#38bdf8",
+      500: "#0ea5e9",
+      600: "#0284c7",
+      700: "#0369a1",
+      800: "#075985",
+      900: "#0c4a6e",
     },
 
     accent: {
-      purple: '#8b5cf6',
-      green: '#10b981',
-      orange: '#f59e0b',
-      pink: '#ec4899',
-      red: '#ef4444',
+      purple: "#8b5cf6",
+      green: "#10b981",
+      orange: "#f59e0b",
+      pink: "#ec4899",
+      red: "#ef4444",
     },
 
     neutral: {
-      50: '#f8fafc',
-      100: '#f1f5f9',
-      200: '#e2e8f0',
-      300: '#cbd5e1',
-      400: '#94a3b8',
-      500: '#64748b',
-      600: '#475569',
-      700: '#334155',
-      800: '#1e293b',
-      900: '#0f172a',
+      50: "#f8fafc",
+      100: "#f1f5f9",
+      200: "#e2e8f0",
+      300: "#cbd5e1",
+      400: "#94a3b8",
+      500: "#64748b",
+      600: "#475569",
+      700: "#334155",
+      800: "#1e293b",
+      900: "#0f172a",
     },
 
     semantic: {
-      success: '#10b981',
-      warning: '#f59e0b',
-      error: '#ef4444',
-      info: '#3b82f6',
+      success: "#10b981",
+      warning: "#f59e0b",
+      error: "#ef4444",
+      info: "#3b82f6",
     },
   },
 
@@ -68,36 +68,38 @@ export const theme = {
   // GRADIENTS
   // =============================================================================
   gradients: {
-    primary: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    secondary: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    accent: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    dark: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
-    success: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
-    warm: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-    cyberpunk: 'linear-gradient(135deg, #ff006e 0%, #8338ec 50%, #3a86ff 100%)',
-    neon: 'linear-gradient(135deg, #00ff87 0%, #60efff 100%)',
+    primary: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    secondary: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    accent: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+    dark: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
+    success: "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)",
+    warm: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+    cyberpunk: "linear-gradient(135deg, #ff006e 0%, #8338ec 50%, #3a86ff 100%)",
+    neon: "linear-gradient(135deg, #00ff87 0%, #60efff 100%)",
   },
 
   // =============================================================================
   // TYPOGRAPHY
   // =============================================================================
   fonts: {
-    primary: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    secondary: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    primary:
+      "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    secondary:
+      "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
     mono: "'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace",
   },
 
   fontSizes: {
-    xs: '0.75rem',    // 12px
-    sm: '0.875rem',   // 14px
-    base: '1rem',     // 16px
-    lg: '1.125rem',   // 18px
-    xl: '1.25rem',    // 20px
-    '2xl': '1.5rem',  // 24px
-    '3xl': '1.875rem', // 30px
-    '4xl': '2.25rem', // 36px
-    '5xl': '3rem',    // 48px
-    '6xl': '3.75rem', // 60px
+    xs: "0.75rem", // 12px
+    sm: "0.875rem", // 14px
+    base: "1rem", // 16px
+    lg: "1.125rem", // 18px
+    xl: "1.25rem", // 20px
+    "2xl": "1.5rem", // 24px
+    "3xl": "1.875rem", // 30px
+    "4xl": "2.25rem", // 36px
+    "5xl": "3rem", // 48px
+    "6xl": "3.75rem", // 60px
   },
 
   fontWeights: {
@@ -113,42 +115,42 @@ export const theme = {
   // SPACING SYSTEM
   // =============================================================================
   spacing: {
-    xs: '0.25rem',   // 4px
-    sm: '0.5rem',    // 8px
-    md: '1rem',      // 16px
-    lg: '1.5rem',    // 24px
-    xl: '2rem',      // 32px
-    '2xl': '3rem',   // 48px
-    '3xl': '4rem',   // 64px
-    '4xl': '5rem',   // 80px
-    '5xl': '6rem',   // 96px
+    xs: "0.25rem", // 4px
+    sm: "0.5rem", // 8px
+    md: "1rem", // 16px
+    lg: "1.5rem", // 24px
+    xl: "2rem", // 32px
+    "2xl": "3rem", // 48px
+    "3xl": "4rem", // 64px
+    "4xl": "5rem", // 80px
+    "5xl": "6rem", // 96px
   },
 
   // =============================================================================
   // BORDER RADIUS
   // =============================================================================
   borderRadius: {
-    none: '0',
-    sm: '0.25rem',   // 4px
-    md: '0.5rem',    // 8px
-    lg: '0.75rem',   // 12px
-    xl: '1rem',      // 16px
-    '2xl': '1.5rem', // 24px
-    '3xl': '2rem',   // 32px
-    full: '50%',
+    none: "0",
+    sm: "0.25rem", // 4px
+    md: "0.5rem", // 8px
+    lg: "0.75rem", // 12px
+    xl: "1rem", // 16px
+    "2xl": "1.5rem", // 24px
+    "3xl": "2rem", // 32px
+    full: "50%",
   },
 
   // =============================================================================
   // SHADOWS
   // =============================================================================
   shadows: {
-    sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-    md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-    lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-    xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-    '2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
-    glow: '0 0 20px rgba(59, 130, 246, 0.3)',
-    glowLarge: '0 0 40px rgba(59, 130, 246, 0.4)',
+    sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+    md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+    lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+    xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+    "2xl": "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+    glow: "0 0 20px rgba(59, 130, 246, 0.3)",
+    glowLarge: "0 0 40px rgba(59, 130, 246, 0.4)",
   },
 
   // =============================================================================
@@ -156,18 +158,18 @@ export const theme = {
   // =============================================================================
   animations: {
     durations: {
-      fast: '150ms',
-      normal: '300ms',
-      slow: '500ms',
-      slower: '800ms',
-      slowest: '1200ms',
+      fast: "150ms",
+      normal: "300ms",
+      slow: "500ms",
+      slower: "800ms",
+      slowest: "1200ms",
     },
 
     easing: {
-      in: 'cubic-bezier(0.4, 0, 1, 1)',
-      out: 'cubic-bezier(0, 0, 0.2, 1)',
-      inOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
-      bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+      in: "cubic-bezier(0.4, 0, 1, 1)",
+      out: "cubic-bezier(0, 0, 0.2, 1)",
+      inOut: "cubic-bezier(0.4, 0, 0.2, 1)",
+      bounce: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
     },
   },
 
@@ -176,19 +178,19 @@ export const theme = {
   // =============================================================================
   glass: {
     light: {
-      background: 'rgba(255, 255, 255, 0.1)',
-      border: 'rgba(255, 255, 255, 0.2)',
-      blur: '10px',
+      background: "rgba(255, 255, 255, 0.1)",
+      border: "rgba(255, 255, 255, 0.2)",
+      blur: "10px",
     },
     medium: {
-      background: 'rgba(255, 255, 255, 0.15)',
-      border: 'rgba(255, 255, 255, 0.3)',
-      blur: '15px',
+      background: "rgba(255, 255, 255, 0.15)",
+      border: "rgba(255, 255, 255, 0.3)",
+      blur: "15px",
     },
     heavy: {
-      background: 'rgba(255, 255, 255, 0.2)',
-      border: 'rgba(255, 255, 255, 0.4)',
-      blur: '20px',
+      background: "rgba(255, 255, 255, 0.2)",
+      border: "rgba(255, 255, 255, 0.4)",
+      blur: "20px",
     },
   },
 
@@ -196,19 +198,19 @@ export const theme = {
   // BREAKPOINTS
   // =============================================================================
   breakpoints: {
-    xs: '475px',
-    sm: '640px',
-    md: '768px',
-    lg: '1024px',
-    xl: '1280px',
-    '2xl': '1536px',
+    xs: "475px",
+    sm: "640px",
+    md: "768px",
+    lg: "1024px",
+    xl: "1280px",
+    "2xl": "1536px",
   },
 
   // =============================================================================
   // Z-INDEX STACK
   // =============================================================================
   zIndex: {
-    auto: 'auto',
+    auto: "auto",
     base: 0,
     dropdown: 1000,
     sticky: 1020,
@@ -227,33 +229,33 @@ export const theme = {
   components: {
     button: {
       heights: {
-        sm: '2rem',      // 32px
-        md: '2.5rem',    // 40px
-        lg: '3rem',      // 48px
-        xl: '3.5rem',    // 56px
+        sm: "2rem", // 32px
+        md: "2.5rem", // 40px
+        lg: "3rem", // 48px
+        xl: "3.5rem", // 56px
       },
       padding: {
-        sm: '0.5rem 1rem',
-        md: '0.75rem 1.5rem',
-        lg: '1rem 2rem',
-        xl: '1.25rem 2.5rem',
+        sm: "0.5rem 1rem",
+        md: "0.75rem 1.5rem",
+        lg: "1rem 2rem",
+        xl: "1.25rem 2.5rem",
       },
     },
 
     input: {
       heights: {
-        sm: '2rem',      // 32px
-        md: '2.5rem',    // 40px
-        lg: '3rem',      // 48px
+        sm: "2rem", // 32px
+        md: "2.5rem", // 40px
+        lg: "3rem", // 48px
       },
     },
 
     card: {
       padding: {
-        sm: '1rem',      // 16px
-        md: '1.5rem',    // 24px
-        lg: '2rem',      // 32px
-        xl: '2.5rem',    // 40px
+        sm: "1rem", // 16px
+        md: "1.5rem", // 24px
+        lg: "2rem", // 32px
+        xl: "2.5rem", // 40px
       },
     },
   },
@@ -298,14 +300,14 @@ export const themeVariants = {
 // =============================================================================
 
 export const getColor = (colorPath) => {
-  const path = colorPath.split('.');
+  const path = colorPath.split(".");
   let result = theme.colors;
-  
+
   for (const key of path) {
     result = result[key];
     if (!result) return null;
   }
-  
+
   return result;
 };
 
@@ -321,23 +323,23 @@ export const getGradient = (name) => theme.gradients[name] || name;
 // CSS-IN-JS HELPERS
 // =============================================================================
 
-export const createGlassEffect = (variant = 'medium') => ({
+export const createGlassEffect = (variant = "medium") => ({
   background: theme.glass[variant].background,
   backdropFilter: `blur(${theme.glass[variant].blur})`,
   WebkitBackdropFilter: `blur(${theme.glass[variant].blur})`,
   border: `1px solid ${theme.glass[variant].border}`,
 });
 
-export const createGradientText = (gradient = 'primary') => ({
+export const createGradientText = (gradient = "primary") => ({
   background: theme.gradients[gradient],
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
-  backgroundClip: 'text',
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
 });
 
-export const createHoverEffect = (translateY = '-2px') => ({
+export const createHoverEffect = (translateY = "-2px") => ({
   transition: `all ${theme.animations.durations.normal} ${theme.animations.easing.inOut}`,
-  '&:hover': {
+  "&:hover": {
     transform: `translateY(${translateY})`,
   },
 });
