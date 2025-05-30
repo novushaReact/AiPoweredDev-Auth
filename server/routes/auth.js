@@ -13,11 +13,13 @@
 import express from "express";
 import passport from "passport";
 import Joi from "joi";
+import speakeasy from "speakeasy";
 import User from "../models/User.js";
 import {
   ensureAuthenticated,
   redirectIfAuthenticated,
 } from "../config/passport.js";
+import { updateLoginTime } from "../middleware/sessionManagement.js";
 
 const router = express.Router();
 
@@ -58,6 +60,9 @@ const loginSchema = Joi.object({
   }),
   password: Joi.string().required().messages({
     "any.required": "Password is required",
+  }),
+  twoFactorCode: Joi.string().allow("", null).optional().messages({
+    "string.base": "Two-factor code must be a string",
   }),
 });
 
@@ -135,10 +140,46 @@ router.post("/register", async (req, res) => {
 });
 
 /**
+ * Helper function to verify 2FA code
+ */
+async function verify2FACode(user, twoFactorCode) {
+  // Verify the TOTP code
+  const verified = speakeasy.totp.verify({
+    secret: user.twoFactorAuth.secret,
+    encoding: "base32",
+    token: twoFactorCode,
+    window: 1, // Allow 1 step before/after for clock skew
+  });
+
+  if (!verified) {
+    // Also check if it's a valid backup code
+    const backupCode = user.twoFactorAuth.backupCodes.find(
+      (bc) => bc.code === twoFactorCode.toUpperCase() && !bc.used
+    );
+
+    if (backupCode) {
+      // Mark backup code as used
+      backupCode.used = true;
+      backupCode.usedAt = new Date();
+      await user.save();
+
+      console.log("✅ Backup code verified during login");
+      return { success: true, method: "backup" };
+    } else {
+      console.log("❌ Invalid 2FA code during login");
+      return { success: false };
+    }
+  } else {
+    console.log("✅ TOTP code verified during login");
+    return { success: true, method: "totp" };
+  }
+}
+
+/**
  * POST /api/auth/login
  * Login with email and password (local strategy)
  */
-router.post("/login", (req, res, next) => {
+router.post("/login", async (req, res, next) => {
   console.log("🔐 Login attempt for:", req.body.email);
 
   // Validate request data
@@ -152,7 +193,7 @@ router.post("/login", (req, res, next) => {
   }
 
   // Use Passport local strategy for authentication
-  passport.authenticate("local", (err, user, info) => {
+  passport.authenticate("local", async (err, user, info) => {
     if (err) {
       console.error("❌ Login authentication error:", err);
       return res.status(500).json({
@@ -170,7 +211,7 @@ router.post("/login", (req, res, next) => {
     }
 
     // Log the user in (create session)
-    req.login(user, (err) => {
+    req.login(user, async (err) => {
       if (err) {
         console.error("❌ Session creation error:", err);
         return res.status(500).json({
@@ -178,20 +219,65 @@ router.post("/login", (req, res, next) => {
           message: "An error occurred during login. Please try again.",
         });
       }
-
       console.log("✅ Login successful for:", user.email);
+
+      // Update session login time for session management
+      req.session.loginTime = new Date();
 
       // Check if user has 2FA enabled
       if (user.twoFactorAuth.isEnabled) {
-        // Don't mark 2FA as verified yet - user needs to provide TOTP code
-        req.session.pendingTwoFactor = true;
+        const { twoFactorCode } = value;
 
-        return res.json({
-          success: true,
-          message: "Login successful. Please provide your 2FA code.",
-          requiresTwoFactor: true,
-          user: user.toJSON(),
-        });
+        // If 2FA code is provided, verify it
+        if (twoFactorCode) {
+          console.log("🔐 Verifying 2FA code during login");
+
+          try {
+            // Verify using the helper function
+            const verificationResult = await verify2FACode(user, twoFactorCode);
+
+            if (verificationResult.success) {
+              console.log(
+                `✅ ${verificationResult.method} code verified during login`
+              );
+              req.session.twoFactorVerified = true;
+              req.session.pendingTwoFactor = false;
+
+              // 2FA verification successful - complete login
+              return res.json({
+                success: true,
+                message: "Login and 2FA verification successful",
+                requiresTwoFactor: false,
+                user: user.toJSON(),
+              });
+            } else {
+              console.log("❌ Invalid 2FA code during login");
+              return res.status(401).json({
+                error: "Invalid 2FA code",
+                message: "The provided 2FA code is invalid. Please try again.",
+                requiresTwoFactor: true,
+              });
+            }
+          } catch (error) {
+            console.error("❌ 2FA verification error:", error);
+            return res.status(500).json({
+              error: "2FA verification failed",
+              message:
+                "An error occurred during 2FA verification. Please try again.",
+            });
+          }
+        } else {
+          // No 2FA code provided - require it
+          req.session.pendingTwoFactor = true;
+          req.session.twoFactorVerified = false;
+
+          return res.json({
+            success: true,
+            message: "Login successful. Please provide your 2FA code.",
+            requiresTwoFactor: true,
+            user: user.toJSON(),
+          });
+        }
       }
 
       // No 2FA required - login complete
@@ -265,6 +351,18 @@ router.post("/logout", ensureAuthenticated, (req, res) => {
   const userEmail = req.user.email;
   console.log("🚪 Logout request for:", userEmail);
 
+  // Log current 2FA session state before logout
+  if (req.session.twoFactorVerified) {
+    console.log("🔓 Clearing 2FA verification during logout for:", userEmail);
+  }
+  if (req.session.pendingTwoFactor) {
+    console.log("🔓 Clearing pending 2FA state during logout for:", userEmail);
+  }
+
+  // Explicitly clear 2FA verification flags before logout
+  req.session.twoFactorVerified = false;
+  req.session.pendingTwoFactor = false;
+
   req.logout((err) => {
     if (err) {
       console.error("❌ Logout error:", err);
@@ -274,7 +372,7 @@ router.post("/logout", ensureAuthenticated, (req, res) => {
       });
     }
 
-    // Destroy the session
+    // Destroy the session (this will clear all session data including 2FA flags)
     req.session.destroy((err) => {
       if (err) {
         console.error("❌ Session destruction error:", err);
@@ -285,6 +383,7 @@ router.post("/logout", ensureAuthenticated, (req, res) => {
       }
 
       console.log("✅ Logout successful for:", userEmail);
+      console.log("✅ Session destroyed and 2FA verification cleared");
       res.json({
         success: true,
         message: "Logout successful",

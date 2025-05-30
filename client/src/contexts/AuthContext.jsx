@@ -106,11 +106,10 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: errorMessage };
     }
   };
-
-  const enableTwoFactor = async () => {
+  const setupTwoFactor = async () => {
     try {
       setError(null);
-      const response = await axios.post("/api/2fa/enable");
+      const response = await axios.post("/api/2fa/setup");
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || "2FA setup failed";
@@ -118,11 +117,42 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: errorMessage };
     }
   };
-
-  const verifyTwoFactor = async (token) => {
+  const verifyTwoFactorSetup = async (token) => {
     try {
       setError(null);
-      const response = await axios.post("/api/2fa/verify", { token });
+      const response = await axios.post("/api/2fa/verify-setup", { token });
+
+      if (response.data.success) {
+        // Update user object with 2FA enabled status immediately
+        setUser((prevUser) => ({
+          ...prevUser,
+          twoFactorEnabled: true,
+          twoFactorAuth: {
+            ...prevUser.twoFactorAuth,
+            isEnabled: true,
+            enabledAt: new Date(),
+          },
+        }));
+
+        // Also refresh user data from server to ensure consistency
+        await checkAuthStatus();
+        return response.data;
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "2FA verification failed";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  const verifyTwoFactor = async (token, isBackupCode = false) => {
+    try {
+      setError(null);
+      const response = await axios.post("/api/2fa/verify", {
+        token,
+        isBackupCode,
+      });
 
       if (response.data.success) {
         // Refresh user data to get updated 2FA status
@@ -136,19 +166,59 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: errorMessage };
     }
   };
-
-  const disableTwoFactor = async (password) => {
+  const disableTwoFactor = async (password, token) => {
     try {
       setError(null);
-      const response = await axios.post("/api/2fa/disable", { password });
+      const response = await axios.delete("/api/2fa/disable", {
+        data: { password, token },
+      });
 
       if (response.data.success) {
+        // Update user object with 2FA disabled status immediately
+        setUser((prevUser) => ({
+          ...prevUser,
+          twoFactorEnabled: false,
+          twoFactorAuth: {
+            ...prevUser.twoFactorAuth,
+            isEnabled: false,
+            enabledAt: null,
+          },
+        }));
+
+        // Also refresh user data from server to ensure consistency
         await checkAuthStatus();
         return response.data;
       }
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "2FA disable failed";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  const getTwoFactorStatus = async () => {
+    try {
+      setError(null);
+      const response = await axios.get("/api/2fa/status");
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to get 2FA status";
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+  const regenerateBackupCodes = async (token) => {
+    try {
+      setError(null);
+      const response = await axios.post("/api/2fa/regenerate-backup-codes", {
+        token,
+      });
+      return response.data;
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message || "Failed to regenerate backup codes";
       setError(errorMessage);
       return { success: false, error: errorMessage };
     }
@@ -170,7 +240,6 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: errorMessage };
     }
   };
-
   const value = {
     user,
     loading,
@@ -179,9 +248,12 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateProfile,
-    enableTwoFactor,
+    setupTwoFactor,
+    verifyTwoFactorSetup,
     verifyTwoFactor,
     disableTwoFactor,
+    getTwoFactorStatus,
+    regenerateBackupCodes,
     changePassword,
     checkAuthStatus,
     setError,

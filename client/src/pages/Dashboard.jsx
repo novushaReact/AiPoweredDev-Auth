@@ -52,16 +52,17 @@ const Dashboard = () => {
     if (!user.twoFactorEnabled) return "text-yellow-500";
     return "text-green-500";
   };
-
   const getAccountStatusText = () => {
     if (!user.isActive) return "Inactive";
-    if (!user.twoFactorEnabled) return "Partially Secured";
+    if (!user.twoFactorEnabled && !user.twoFactorAuth?.isEnabled)
+      return "Partially Secured";
     return "Fully Secured";
   };
 
   const getAccountStatusIcon = () => {
     if (!user.isActive) return <AlertTriangle className="w-5 h-5" />;
-    if (!user.twoFactorEnabled) return <AlertTriangle className="w-5 h-5" />;
+    if (!user.twoFactorEnabled && !user.twoFactorAuth?.isEnabled)
+      return <AlertTriangle className="w-5 h-5" />;
     return <CheckCircle className="w-5 h-5" />;
   };
 
@@ -86,10 +87,9 @@ const Dashboard = () => {
         <p className="text-blue-200 text-lg">
           Manage your account security and view your activity
         </p>
-      </div>
-
+      </div>{" "}
       {/* Security Alert */}
-      {!user.twoFactorEnabled && (
+      {!user.twoFactorEnabled && !user.twoFactorAuth?.isEnabled && (
         <div className="bg-yellow-500/20 border border-yellow-500/50 text-white p-6 rounded-xl mb-8 animate-slide-up">
           <div className="flex items-start space-x-3">
             <AlertTriangle className="w-6 h-6 text-yellow-400 flex-shrink-0 mt-1" />
@@ -113,7 +113,6 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {/* Account Status */}
@@ -128,9 +127,9 @@ const Dashboard = () => {
           </div>
           <div className="text-2xl font-bold text-white mb-1">
             {getAccountStatusText()}
-          </div>
+          </div>{" "}
           <div className="text-blue-200 text-sm">
-            {user.twoFactorEnabled
+            {user.twoFactorEnabled || user.twoFactorAuth?.isEnabled
               ? "All security features enabled"
               : "Security can be improved"}
           </div>
@@ -181,9 +180,12 @@ const Dashboard = () => {
           style={{ animationDelay: "0.3s" }}
         >
           <div className="flex items-center justify-between mb-4">
+            {" "}
             <div
               className={`flex items-center space-x-2 ${
-                user.twoFactorEnabled ? "text-green-400" : "text-red-400"
+                user.twoFactorEnabled || user.twoFactorAuth?.isEnabled
+                  ? "text-green-400"
+                  : "text-red-400"
               }`}
             >
               <Shield className="w-5 h-5" />
@@ -191,12 +193,13 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="text-2xl font-bold text-white mb-1">
-            {user.twoFactorEnabled ? "Enabled" : "Disabled"}
+            {user.twoFactorEnabled || user.twoFactorAuth?.isEnabled
+              ? "Enabled"
+              : "Disabled"}
           </div>
           <div className="text-blue-200 text-sm">Two-factor authentication</div>
         </div>
       </div>
-
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Account Information */}

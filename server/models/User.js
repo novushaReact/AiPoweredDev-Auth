@@ -219,6 +219,16 @@ const userSchema = new Schema(
  * These are computed fields that don't exist in the database
  */
 
+// Add a virtual field for frontend consistency
+userSchema.virtual("twoFactorEnabled").get(function () {
+  return this.twoFactorAuth.isEnabled;
+});
+
+// Add provider virtual field
+userSchema.virtual("provider").get(function () {
+  return this.authProvider;
+});
+
 // Full name virtual field
 userSchema.virtual("fullName").get(function () {
   return `${this.firstName} ${this.lastName}`;

@@ -12,6 +12,7 @@ import {
   CheckCircle,
   Trash2,
   Globe,
+  AlertTriangle,
 } from "lucide-react";
 import LoadingSpinner from "../components/LoadingSpinner";
 
@@ -42,6 +43,7 @@ const Profile = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [show2FAPassword, setShow2FAPassword] = useState(false);
   const [disable2FAPassword, setDisable2FAPassword] = useState("");
+  const [disable2FAToken, setDisable2FAToken] = useState("");
 
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -204,7 +206,6 @@ const Profile = () => {
       setTimeout(() => setSuccessMessage(""), 5000);
     }
   };
-
   const handleDisable2FA = async (e) => {
     e.preventDefault();
 
@@ -213,14 +214,20 @@ const Profile = () => {
       return;
     }
 
+    if (!disable2FAToken || disable2FAToken.length !== 6) {
+      setError("Please enter a valid 6-digit 2FA code");
+      return;
+    }
+
     setIsDisabling2FA(true);
 
-    const result = await disableTwoFactor(disable2FAPassword);
+    const result = await disableTwoFactor(disable2FAPassword, disable2FAToken);
 
     setIsDisabling2FA(false);
 
     if (result.success) {
       setDisable2FAPassword("");
+      setDisable2FAToken("");
       setSuccessMessage("Two-factor authentication disabled successfully!");
       setTimeout(() => setSuccessMessage(""), 5000);
     }
@@ -640,25 +647,22 @@ const Profile = () => {
                   )}
                 </div>
               </div>
-
               <div className="flex items-center justify-between">
                 <span className="text-blue-200">Password Protection</span>
                 <CheckCircle className="w-5 h-5 text-green-400" />
-              </div>
-
+              </div>{" "}
               <div className="flex items-center justify-between">
                 <span className="text-blue-200">Two-Factor Auth</span>
-                {user.twoFactorEnabled ? (
+                {user.twoFactorEnabled || user.twoFactorAuth?.isEnabled ? (
                   <CheckCircle className="w-5 h-5 text-green-400" />
                 ) : (
                   <AlertCircle className="w-5 h-5 text-yellow-400" />
                 )}
               </div>
             </div>
-          </div>
-
+          </div>{" "}
           {/* Two-Factor Authentication */}
-          {user.twoFactorEnabled ? (
+          {user.twoFactorEnabled || user.twoFactorAuth?.isEnabled ? (
             <div
               className="glass-effect p-6 rounded-xl animate-slide-up"
               style={{ animationDelay: "0.3s" }}
@@ -667,7 +671,6 @@ const Profile = () => {
                 <Shield className="w-5 h-5" />
                 <span>Two-Factor Auth</span>
               </h3>
-
               <div className="mb-4">
                 <div className="flex items-center space-x-2 text-green-400 mb-2">
                   <CheckCircle className="w-5 h-5" />
@@ -676,15 +679,14 @@ const Profile = () => {
                 <p className="text-blue-200 text-sm">
                   Your account is protected with two-factor authentication.
                 </p>
-              </div>
-
+              </div>{" "}
               <form onSubmit={handleDisable2FA} className="space-y-4">
                 <div>
                   <label
                     htmlFor="disable2FAPassword"
                     className="block text-sm font-medium text-white mb-2"
                   >
-                    Enter Password to Disable
+                    Enter Password
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-300 w-5 h-5" />
@@ -710,6 +712,30 @@ const Profile = () => {
                         <Eye className="w-5 h-5" />
                       )}
                     </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="disable2FAToken"
+                    className="block text-sm font-medium text-white mb-2"
+                  >
+                    Enter 2FA Code
+                  </label>
+                  <div className="relative">
+                    <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-300 w-5 h-5" />
+                    <input
+                      id="disable2FAToken"
+                      type="text"
+                      value={disable2FAToken}
+                      onChange={(e) => setDisable2FAToken(e.target.value)}
+                      maxLength="6"
+                      className="
+                        w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white
+                        placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400
+                      "
+                      placeholder="Enter 6-digit code"
+                    />
                   </div>
                 </div>
 

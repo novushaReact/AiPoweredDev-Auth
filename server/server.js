@@ -23,6 +23,12 @@ import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/user.js";
 import twoFactorRoutes from "./routes/twoFactor.js";
 
+// Import middleware
+import {
+  checkSessionExpiry,
+  clear2FAOnSessionExpiry,
+} from "./middleware/sessionManagement.js";
+
 // Import passport configuration
 import "./config/passport.js";
 
@@ -109,6 +115,7 @@ app.use(
       mongoUrl:
         process.env.MONGODB_URI || "mongodb://localhost:27017/mfa_auth_db",
       touchAfter: 24 * 3600, // Lazy session update (seconds)
+      ttl: 10 * 60 * 60, // 10 hours session expiry in seconds
       crypto: {
         secret: process.env.SESSION_SECRET || "fallback-secret",
       },
@@ -116,7 +123,7 @@ app.use(
     cookie: {
       secure: process.env.NODE_ENV === "production", // Use secure cookies in production
       httpOnly: true, // Prevent XSS attacks
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxAge: 10 * 60 * 60 * 1000, // 10 hours in milliseconds
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
     name: "mfa.sid", // Change default session name for security
@@ -175,9 +182,12 @@ app.get("/health", (req, res) => {
  * API Routes
  * Mount all authentication and user-related routes
  */
+// Apply session management middleware to protected routes
+app.use(clear2FAOnSessionExpiry); // Clear 2FA flags when session expires
+
 app.use("/api/auth", authLimiter, authRoutes); // Authentication routes with rate limiting
-app.use("/api/user", userRoutes); // User profile routes
-app.use("/api/2fa", twoFactorRoutes); // Two-factor authentication routes
+app.use("/api/user", checkSessionExpiry, userRoutes); // User profile routes with session check
+app.use("/api/2fa", checkSessionExpiry, twoFactorRoutes); // Two-factor authentication routes with session check
 
 /**
  * Welcome Route

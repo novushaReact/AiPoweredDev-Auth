@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import {
@@ -16,7 +16,8 @@ import {
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const TwoFactorSetup = () => {
-  const { user, enableTwoFactor, verifyTwoFactor, error, setError } = useAuth();
+  const { user, setupTwoFactor, verifyTwoFactorSetup, error, setError } =
+    useAuth();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
@@ -29,30 +30,32 @@ const TwoFactorSetup = () => {
   const [copiedSecret, setCopiedSecret] = useState(false);
   const [copiedBackupCodes, setCopiedBackupCodes] = useState(false);
 
+  // Check if user already has 2FA enabled, redirect to dashboard if so
   useEffect(() => {
     if (user?.twoFactorEnabled) {
       navigate("/dashboard");
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    if (step === 1) {
-      initializeTwoFactor();
-    }
-  }, [step]);
-
-  const initializeTwoFactor = async () => {
+  // Initialize 2FA setup when component loads
+  const initializeTwoFactor = useCallback(async () => {
     setIsLoading(true);
-    const result = await enableTwoFactor();
+    const result = await setupTwoFactor();
     setIsLoading(false);
 
     if (result.success) {
       setQrCode(result.qrCode);
-      setSecret(result.secret);
-      setBackupCodes(result.backupCodes);
+      setSecret(result.manualEntryKey);
+      // Backup codes are only provided after verification
     }
-  };
+  }, [setupTwoFactor]);
 
+  // Call initializeTwoFactor when step 1 is reached
+  useEffect(() => {
+    if (step === 1) {
+      initializeTwoFactor();
+    }
+  }, [step, initializeTwoFactor]);
   const handleVerification = async (e) => {
     e.preventDefault();
 
@@ -62,10 +65,11 @@ const TwoFactorSetup = () => {
     }
 
     setIsLoading(true);
-    const result = await verifyTwoFactor(verificationCode);
+    const result = await verifyTwoFactorSetup(verificationCode);
     setIsLoading(false);
 
     if (result.success) {
+      setBackupCodes(result.backupCodes);
       setStep(3);
     }
   };

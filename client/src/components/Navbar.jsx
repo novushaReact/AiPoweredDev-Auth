@@ -47,7 +47,7 @@ const Navbar = () => {
                 >
                   Profile
                 </Link>
-                {!user.twoFactorEnabled && (
+                {!(user.twoFactorEnabled || user.twoFactorAuth?.isEnabled) && (
                   <Link
                     to="/2fa-setup"
                     className="text-yellow-300 hover:text-yellow-200 transition-colors font-medium flex items-center space-x-1"
@@ -57,10 +57,12 @@ const Navbar = () => {
                   </Link>
                 )}
                 <div className="flex items-center space-x-4">
+                  {" "}
                   <div className="flex items-center space-x-2 text-white">
                     <User className="w-5 h-5" />
                     <span className="font-medium">{user.firstName}</span>
-                    {user.twoFactorEnabled && (
+                    {(user.twoFactorEnabled ||
+                      user.twoFactorAuth?.isEnabled) && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                         2FA
                       </span>
@@ -112,10 +114,12 @@ const Navbar = () => {
             <div className="px-4 py-6 space-y-4">
               {user ? (
                 <>
+                  {" "}
                   <div className="flex items-center space-x-2 text-white border-b border-white/20 pb-4">
                     <User className="w-5 h-5" />
                     <span className="font-medium">{user.firstName}</span>
-                    {user.twoFactorEnabled && (
+                    {(user.twoFactorEnabled ||
+                      user.twoFactorAuth?.isEnabled) && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                         2FA
                       </span>
@@ -135,7 +139,9 @@ const Navbar = () => {
                   >
                     Profile
                   </Link>
-                  {!user.twoFactorEnabled && (
+                  {!(
+                    user.twoFactorEnabled || user.twoFactorAuth?.isEnabled
+                  ) && (
                     <Link
                       to="/2fa-setup"
                       className="block text-yellow-300 hover:text-yellow-200 transition-colors font-medium py-2"
